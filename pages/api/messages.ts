@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createClient } from "@libsql/client";
 
 const db = createClient({
-	url: process.env.TURSO_URL!,
+	url: process.env.TURSO_DATABASE_URL!,
 	authToken: process.env.TURSO_AUTH_TOKEN,
 });
 
@@ -23,7 +23,7 @@ export default async function handler(
 		);
 
 		if (fromLegacy === "true") {
-			res.redirect("/legacy");
+			res.redirect("/");
 		}
 
 		res.status(200).json({ success: true });

@@ -2,11 +2,9 @@ import "dotenv/config";
 
 import { createClient } from "@libsql/client";
 
-console.log(process.env)
-
 async function seed() {
 	const db = createClient({
-		url: process.env.TURSO_URL,
+		url: process.env.TURSO_DATABASE_URL,
 		authToken: process.env.TURSO_AUTH_TOKEN,
 	});
 
@@ -20,4 +18,4 @@ async function seed() {
 `);
 }
 
-// seed();
+seed();
