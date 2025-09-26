@@ -53,7 +53,7 @@ export default function Legacy({
 				fontFamily: "Arial, sans-serif",
 				fontSize: "14px",
 				lineHeight: "1.4",
-				padding: "10px",
+				padding: "4px",
 			}}
 		>
 			{/* Form input di atas */}
@@ -110,9 +110,18 @@ export default function Legacy({
 						}}
 					>
 						<div>{m.text}</div>
-						<div style={{ fontSize: "12px", color: "#555", display: "flex",justifyContent:'space-between' }}>
+						<div
+							style={{
+								fontSize: "12px",
+								color: "#555",
+								display: "flex",
+								justifyContent: "space-between",
+							}}
+						>
 							<div>{m.sender}</div>
-							<div>{new Date(m.created_at).toLocaleString("id")}</div>
+							<div style={{ fontSize: "8px" }}>
+								{new Date(m.created_at).toLocaleString("id")}
+							</div>
 						</div>
 					</li>
 				))}
