@@ -104,24 +104,12 @@ export default function Legacy({
 				{messages.map((m) => (
 					<li
 						key={m.id}
-						style={{
-							borderBottom: "1px solid #ccc",
-							padding: "5px 0",
-						}}
+						style={{ borderBottom: "1px solid #ccc", padding: "5px 0" }}
 					>
 						<div>{m.text}</div>
-						<div
-							style={{
-								fontSize: "12px",
-								color: "#555",
-								display: "flex",
-								justifyContent: "space-between",
-							}}
-						>
-							<div>{m.sender}</div>
-							<div style={{ fontSize: "8px" }}>
-								{new Date(m.created_at).toLocaleString("id")}
-							</div>
+						<div>{m.sender}</div>
+						<div style={{ fontSize: "8px" }}>
+							{new Date(m.created_at).toLocaleString("id")}
 						</div>
 					</li>
 				))}
