@@ -1,43 +1,32 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@libsql/client";
 
-const filePath = path.join(process.cwd(), "data.json");
+const db = createClient({
+	url: process.env.TURSO_URL!,
+	authToken: process.env.TURSO_AUTH_TOKEN,
+});
 
-function readMessages() {
-	if (!fs.existsSync(filePath)) return [];
-	const raw = fs.readFileSync(filePath, "utf-8");
-	return raw ? JSON.parse(raw) : [];
-}
-
-function writeMessages(messages: any[]) {
-	fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
-}
-
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse
+) {
 	if (req.method === "GET") {
-		const messages = readMessages();
-		res.status(200).json(messages.reverse());
+		const messages = await db.execute(
+			"SELECT * FROM messages ORDER BY created_at DESC LIMIT 50"
+		);
+		res.status(200).json(messages.rows);
 	} else if (req.method === "POST") {
-		const { text, fromLegacy } = req.body || {};
-
-		if (!text) return res.status(400).json({ error: "Text is required" });
-
-		const messages = readMessages();
-		const msg = {
-			text,
-			fromLegacy,
-			id: Date.now(),
-			created_at: new Date().toISOString(),
-		};
-		messages.push(msg);
-		writeMessages(messages);
+		const { text, fromLegacy } = req.body;
+		await db.execute(
+			"INSERT INTO messages (text, fromLegacy, created_at) VALUES (?, ?, ?)",
+			[text, fromLegacy, new Date().toISOString()]
+		);
 
 		if (fromLegacy === "true") {
 			res.redirect("/legacy");
 		}
 
-		res.status(200).json(msg);
+		res.status(200).json({ success: true });
 	} else {
 		res.status(405).end();
 	}

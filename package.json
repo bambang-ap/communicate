@@ -5,13 +5,16 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "seed": "node seed.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "dotenv": "^17.2.2",
     "next": "^15.5.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
