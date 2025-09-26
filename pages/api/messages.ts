@@ -10,6 +10,7 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
+	console.log("ashjgash", req.headers);
 	if (req.method === "GET") {
 		const messages = await db.execute(
 			"SELECT * FROM messages ORDER BY created_at DESC LIMIT 50"
@@ -22,11 +23,7 @@ export default async function handler(
 			[text, fromLegacy, new Date().toISOString()]
 		);
 
-		if (fromLegacy === "true") {
-			res.redirect("/");
-		}
-
-		res.status(200).json({ success: true });
+		res.redirect("/");
 	} else {
 		res.status(405).end();
 	}
