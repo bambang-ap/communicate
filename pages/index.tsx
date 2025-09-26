@@ -68,7 +68,7 @@ export default function Legacy({
 			>
 				<input
 					required
-					// type={!!username ? "hidden" : "text"}
+					type={!!username ? "hidden" : "text"}
 					name="username"
 					placeholder="Nama Anda"
 					defaultValue={username}
