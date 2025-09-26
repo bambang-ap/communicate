@@ -99,17 +99,16 @@ export default function Legacy({
 				</button>
 			</form>
 
-			<h3 style={{ margin: "0 0 10px 0" }}>Pesan Terbaru</h3>
 			<ul style={{ listStyle: "none", padding: 0 }}>
 				{messages.map((m) => (
 					<li
 						key={m.id}
 						style={{ borderBottom: "1px solid #ccc", padding: "5px 0" }}
 					>
-						<div>{m.text}</div>
-						<div>{m.sender}</div>
-						<div style={{ fontSize: "8px" }}>
-							{new Date(m.created_at).toLocaleString("id")}
+						<div style={{ fontWeight: "bold" }}>{m.text}</div>
+						<div style={{ fontSize: "10px", color: "#555" }}>
+							<div>{m.sender}</div>
+							<div>{new Date(m.created_at).toLocaleString("id")}</div>
 						</div>
 					</li>
 				))}
