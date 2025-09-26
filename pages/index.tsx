@@ -1,42 +1,34 @@
-import { useEffect, useState } from "react";
+import { GetServerSideProps } from "next";
+import { createRoot } from "react-dom/client";
 
 type Message = { id: number; text: string; created_at: string };
 
-export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [text, setText] = useState("");
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+	const baseUrl =
+		process.env.NEXT_PUBLIC_BASE_URL || `http://${req.headers.host}`;
+	const res = await fetch(`${baseUrl}/api/messages`);
+	const messages: Message[] = await res.json();
+	return { props: { messages } };
+};
 
-  const load = async () => {
-    const res = await fetch("/api/messages");
-    setMessages(await res.json());
-  };
+export default function Legacy({ messages = [] }: { messages: Message[] }) {
 
-  useEffect(() => {
-    load();
-  }, []);
+	return (
+		<>
+			<h3>Pesan Terbaru</h3>
+			<ul>
+				{messages.map((m) => (
+					<li key={m.id}>
+						{m.created_at}: {m.text}
+					</li>
+				))}
+			</ul>
 
-  const send = async () => {
-    await fetch("/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    });
-    setText("");
-    load();
-  };
-
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>Pesan untuk Ortu</h1>
-      <input value={text} onChange={(e) => setText(e.target.value)} />
-      <button onClick={send}>Kirim</button>
-      <ul>
-        {messages.map((m) => (
-          <li key={m.id}>
-            {m.created_at}: {m.text}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+			<form method="POST" action="/api/messages">
+				<input  style={{display:'none'}} name="fromLegacy" value="true" />
+				<input type="text" name="text" />
+				<button type="submit">Kirim</button>
+			</form>
+		</>
+	);
 }
