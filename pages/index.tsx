@@ -1,18 +1,15 @@
 import { GetServerSideProps } from "next";
-import { createRoot } from "react-dom/client";
+import { getBaseUrl } from "../src";
 
 type Message = { id: number; text: string; created_at: string };
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-	const baseUrl =
-		process.env.NEXT_PUBLIC_BASE_URL || `http://${req.headers.host}`;
-	const res = await fetch(`${baseUrl}/api/messages`);
+	const res = await fetch(`${getBaseUrl(req)}/api/messages`);
 	const messages: Message[] = await res.json();
 	return { props: { messages } };
 };
 
 export default function Legacy({ messages = [] }: { messages: Message[] }) {
-
 	return (
 		<>
 			<h3>Pesan Terbaru</h3>
@@ -25,7 +22,7 @@ export default function Legacy({ messages = [] }: { messages: Message[] }) {
 			</ul>
 
 			<form method="POST" action="/api/messages">
-				<input  style={{display:'none'}} name="fromLegacy" value="true" />
+				<input style={{ display: "none" }} name="fromLegacy" value="true" />
 				<input type="text" name="text" />
 				<button type="submit">Kirim</button>
 			</form>
