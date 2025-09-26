@@ -12,14 +12,25 @@ export default async function handler(
 ) {
 	if (req.method === "GET") {
 		const messages = await db.execute(
-			"SELECT * FROM messages ORDER BY created_at DESC LIMIT 50"
+			"SELECT * FROM messages ORDER BY created_at DESC LIMIT 10"
 		);
 		res.status(200).json(messages.rows);
 	} else if (req.method === "POST") {
-		const { text, fromLegacy } = req.body;
+		const { text, username } = req.body;
+		const sender = username || req.cookies["username"] || "Anonymous";
+
+		if (!req.cookies["username"] && sender) {
+			res.setHeader(
+				"Set-Cookie",
+				`username=${encodeURIComponent(sender)}; Path=/; Max-Age=${
+					60 * 60 * 24 * 30
+				}; HttpOnly`
+			);
+		}
+
 		await db.execute(
-			"INSERT INTO messages (text, fromLegacy, created_at) VALUES (?, ?, ?)",
-			[text, fromLegacy, new Date().toISOString()]
+			"INSERT INTO messages (text, sender, created_at) VALUES (?, ?, ?)",
+			[text, sender, new Date().toISOString()]
 		);
 
 		res.redirect("/");
